@@ -1,3 +1,46 @@
+<div align="center">
+
+# ⚠️ 个人存档副本 · 非官方
+
+## 本仓库**不是**官方发布渠道
+
+### 仅作个人参考、备份与学习之用
+
+<br>
+
+**作者 → [saya-ch](https://github.com/saya-ch)（Guangqi Zhang）**
+
+**官方仓库 → [saya-ch/dsh-mobile](https://github.com/saya-ch/dsh-mobile)**
+
+**作者主页 → [saya.work](https://saya.work)**
+
+<br>
+
+### 联系作者的官方渠道
+
+| 你要做什么 | 去哪里 |
+|---|---|
+| 使用问题、功能建议 | [GitHub Issues](https://github.com/saya-ch/dsh-mobile/issues) |
+| 报告安全漏洞 | [GitHub 私密漏洞报告](https://github.com/saya-ch/dsh-mobile/security/advisories/new)（**不要**公开发 issue） |
+| 看作者其它作品 | [saya.work](https://saya.work) 或 [GitHub 主页](https://github.com/saya-ch) |
+
+<br>
+
+> **不要通过本副本联系作者**——这里不是官方渠道，作者也不会看到。
+>
+> 本副本不提供支持、不保证与官方同步，也没有官方发布的 APK 与 npm 包。
+> 需要真正可用的版本，请一律前往官方仓库。
+>
+> 本仓库自 **2026-11-17** 起相对上游有改动：修复了一个在 arm64 平台必然失败的
+> 测试用例，并新增 `FORK.md` 记录验证结果（依据 Apache-2.0 第 4 条，
+> 修改版须保留版权声明；本说明同时用于避免误认为官方）。
+>
+> 请理解，谢谢。
+
+</div>
+
+---
+
 <p align="center">
   <img src="https://raw.githubusercontent.com/saya-ch/dsh-mobile/main/assets/brand/repository-hero.png?v=0bfc8f909993" alt="用手机使用电脑中的 DeepSeek Harness" width="100%">
 </p>
