@@ -14,6 +14,7 @@ import { generate } from 'selfsigned'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { Config, parseGatewayConfig, type PluginConfig } from '../src/config.js'
 import { JsonMobileAccessControlStore } from '../src/control.js'
+import { IROH_NATIVE_TARGETS } from '../src/iroh-manifest.js'
 import { parseCidr, RequestTrustPolicy } from '../src/network.js'
 import * as network from '../src/network.js'
 import * as managedSetup from '../src/managed-setup.js'
@@ -1713,14 +1714,22 @@ describe('stock DSH lifecycle', () => {
     })
     const refused = await invoke(mounted.route, 'POST', '/api/mobile-access/remote/iroh/component/install', '{}')
     expect(refused.status).toBe(400)
+    // iroh 只发布了 win32-x64 / linux-x64 两个原生产物。在其它平台（例如 linux-arm64）
+    // 安装会在下载之前就以 platform_unsupported 失败，此时下载路径无从触发。
+    const irohTarget = `${process.platform}-${process.arch}`
+    const irohArtifactSupported = Object.hasOwn(IROH_NATIVE_TARGETS, irohTarget)
     const confirmed = await invoke(mounted.route, 'POST', '/api/mobile-access/remote/iroh/component/install', JSON.stringify({ confirm: true }))
     expect(confirmed.status).toBe(409)
-    expect(JSON.parse(confirmed.body)).toEqual({ error: 'iroh_download_size_mismatch' })
-    expect(fetch).toHaveBeenCalled()
-    fetch.mockRejectedValue(new TypeError('fetch failed'))
-    const offline = await invoke(mounted.route, 'POST', '/api/mobile-access/remote/iroh/component/install', JSON.stringify({ confirm: true }))
-    expect(offline.status).toBe(409)
-    expect(JSON.parse(offline.body)).toEqual({ error: 'iroh_download_failed' })
+    expect(JSON.parse(confirmed.body)).toEqual({
+      error: irohArtifactSupported ? 'iroh_download_size_mismatch' : 'iroh_platform_unsupported',
+    })
+    if (irohArtifactSupported) {
+      expect(fetch).toHaveBeenCalled()
+      fetch.mockRejectedValue(new TypeError('fetch failed'))
+      const offline = await invoke(mounted.route, 'POST', '/api/mobile-access/remote/iroh/component/install', JSON.stringify({ confirm: true }))
+      expect(offline.status).toBe(409)
+      expect(JSON.parse(offline.body)).toEqual({ error: 'iroh_download_failed' })
+    }
     const started = await invoke(mounted.route, 'POST', '/api/mobile-access/remote/control', JSON.stringify({ running: true }))
     expect(started.status).toBe(200)
     expect(JSON.parse(started.body)).toMatchObject({ provider: 'iroh', running: true, state: 'unavailable', errorCode: 'iroh_companion_missing' })
